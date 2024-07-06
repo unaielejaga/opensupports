@@ -14,10 +14,6 @@ RUN curl -fsSL -o opensupports.zip https://github.com/opensupports/opensupports/
     && unzip opensupports.zip -d /var/www/html \
     && rm -r opensupports.zip
 
-RUN a2enmod ssl \
-    && a2ensite default-ssl.conf \
-    && service apache2 restart
-
 # Establecer el directorio de trabajo
 WORKDIR /var/www/html
 
