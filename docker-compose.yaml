@@ -1,0 +1,19 @@
+version: '3.8'
+
+services:
+  app:
+    build: .
+    ports:
+      - "80:80"
+    depends_on:
+      - mariadb
+
+  mariadb:
+    image: mariadb:11.4.2
+    environment:
+      MYSQL_USER: opensupports
+      MYSQL_PASSWORD: admin
+      MYSQL_DATABASE: opensupports
+      MYSQL_RANDOM_ROOT_PASSWORD: 'true'
+    ports:
+      - "3306:3306"
