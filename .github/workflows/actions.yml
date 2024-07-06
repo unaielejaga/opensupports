@@ -1,0 +1,30 @@
+name: Deploy to EC2
+
+on:
+  push:
+    branches:
+      - release
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Deploy to EC2
+      env:
+        AWS_SSH_PRIVATE_KEY: ${{ secrets.AWS_SSH_PRIVATE_KEY }}
+        AWS_SSH_HOST: ${{ secrets.AWS_SSH_HOST }}
+        AWS_SSH_USER: ${{ secrets.AWS_SSH_USER }}  
+      run: |
+        echo "$AWS_SSH_PRIVATE_KEY" > private_key.pem
+        chmod 600 private_key.pem
+        ssh -o StrictHostKeyChecking=no -i private_key.pem $AWS_SSH_USER@$AWS_SSH_HOST << 'EOF'
+          cd /opensupports
+          docker-compose down
+          git pull origin release
+          docker-compose up -d
+        EOF
+      continue-on-error: false
